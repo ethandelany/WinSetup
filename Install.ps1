@@ -111,7 +111,7 @@ $razerInstall = Read-Host 'Install Razer Synapse? (y/n)'
 if ($razerInstall -eq 'y') {
     Write-Host ""
     Write-Host "Installing Razer Synapse..." -ForegroundColor Green
-    wget http://rzr.to/synapse-3-pc-download  -OutFile C:\Users\$env:USERPROFILE\Downloads\RazerSynapseInstaller.exe
+    wget https://dl.razerzone.com/drivers/Synapse3/win/RazerSynapseInstaller_V1.0.125.158.exe  -OutFile C:\Users\$env:USERPROFILE\Downloads\RazerSynapseInstaller.exe
     Start-Process -FilePath "C:\Users\$env:USERPROFILE\Downloads\RazerSynapseInstaller.exe"
 }
 else {
@@ -122,7 +122,7 @@ $steelSeriesInstall = Read-Host 'Install SteelSeries Engine? (y/n)'
 if ($steelSeriesInstall -eq 'y') {
     Write-Host ""
     Write-Host "Installing SteelSeries Engine..." -ForegroundColor Green
-    wget https://steelseries.com/engine/latest/windows  -OutFile C:\Users\$env:USERPROFILE\Downloads\SteelSeriesEngineInstaller.exe
+    wget https://engine.steelseriescdn.com/SteelSeriesEngine3.17.4Setup.exe  -OutFile C:\Users\$env:USERPROFILE\Downloads\SteelSeriesEngineInstaller.exe
     Start-Process -FilePath "C:\Users\$env:USERPROFILE\Downloads\SteelSeriesEngineInstaller.exe"
 }
 else {
