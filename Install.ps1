@@ -16,19 +16,6 @@ Powercfg /Change monitor-timeout-ac 20
 Powercfg /Change standby-timeout-ac 0
 # -----------------------------------------------------------------------------
 Write-Host ""
-Write-Host "Add 'This PC' Desktop Icon..." -ForegroundColor Green
-Write-Host "------------------------------------" -ForegroundColor Green
-$thisPCIconRegPath = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\HideDesktopIcons\NewStartPanel"
-$thisPCRegValname = "{20D04FE0-3AEA-1069-A2D8-08002B30309D}" 
-$item = Get-ItemProperty -Path $thisPCIconRegPath -Name $thisPCRegValname -ErrorAction SilentlyContinue 
-if ($item) { 
-    Set-ItemProperty  -Path $thisPCIconRegPath -name $thisPCRegValname -Value 0  
-} 
-else { 
-    New-ItemProperty -Path $thisPCIconRegPath -Name $thisPCRegValname -Value 0 -PropertyType DWORD | Out-Null  
-} 
-# -----------------------------------------------------------------------------
-Write-Host ""
 Write-Host "Removing Edge Desktop Icon..." -ForegroundColor Green
 Write-Host "------------------------------------" -ForegroundColor Green
 $edgeLink = $env:USERPROFILE + "\Desktop\Microsoft Edge.lnk"
@@ -42,7 +29,15 @@ $uwpRubbishApps = @(
     "Microsoft.Messaging",
     "king.com.CandyCrushSaga",
     "Microsoft.BingNews",
+    "Microsoft.BingWeather",
+    "Microsoft.GetHelp",
+    "Microsoft.3DViewer",
     "Microsoft.MicrosoftSolitaireCollection",
+    "Microsoft.MicrosoftStickyNotes",
+    "Microsoft.MSPaint",
+    "Microsoft.SkypeApp",
+    "Microsoft.WindowsMaps",
+    "Microsoft.WindowsSoundRecorder",
     "Microsoft.People",
     "Microsoft.WindowsFeedbackHub",
     "Microsoft.YourPhone",
@@ -54,46 +49,22 @@ foreach ($uwp in $uwpRubbishApps) {
     Get-AppxPackage -Name $uwp | Remove-AppxPackage
 }
 # -----------------------------------------------------------------------------
-Write-Host ""
-Write-Host "Installing IIS..." -ForegroundColor Green
-Write-Host "------------------------------------" -ForegroundColor Green
-Enable-WindowsOptionalFeature -Online -FeatureName IIS-DefaultDocument -All
-Enable-WindowsOptionalFeature -Online -FeatureName IIS-HttpCompressionDynamic -All
-Enable-WindowsOptionalFeature -Online -FeatureName IIS-HttpCompressionStatic -All
-Enable-WindowsOptionalFeature -Online -FeatureName IIS-WebSockets -All
-Enable-WindowsOptionalFeature -Online -FeatureName IIS-ApplicationInit -All
-Enable-WindowsOptionalFeature -Online -FeatureName IIS-ASPNET45 -All
-Enable-WindowsOptionalFeature -Online -FeatureName IIS-ServerSideIncludes
-Enable-WindowsOptionalFeature -Online -FeatureName IIS-BasicAuthentication
-Enable-WindowsOptionalFeature -Online -FeatureName IIS-WindowsAuthentication
-# -----------------------------------------------------------------------------
-Write-Host ""
-Write-Host "Enable Windows 10 Developer Mode..." -ForegroundColor Green
-Write-Host "------------------------------------" -ForegroundColor Green
-reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock" /t REG_DWORD /f /v "AllowDevelopmentWithoutDevLicense" /d "1"
-# -----------------------------------------------------------------------------
-Write-Host ""
-Write-Host "Enable Remote Desktop..." -ForegroundColor Green
-Write-Host "------------------------------------" -ForegroundColor Green
-Set-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\" -Name "fDenyTSConnections" -Value 0
-Set-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp\" -Name "UserAuthentication" -Value 1
-Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
 
 if (Check-Command -cmdname 'choco') {
-    Write-Host "Choco is already installed, skip installation."
+    Write-Host "Chocolatey is already installed, skipping installation."
 }
 else {
     Write-Host ""
-    Write-Host "Installing Chocolate for Windows..." -ForegroundColor Green
+    Write-Host "Installing Chocolatey for Windows..." -ForegroundColor Green
     Write-Host "------------------------------------" -ForegroundColor Green
     Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
 }
 
 Write-Host ""
-Write-Host "Installing Applications..." -ForegroundColor Green
+Write-Host "Installing Applications via Chocolatey..." -ForegroundColor Green
 Write-Host "------------------------------------" -ForegroundColor Green
-Write-Host "[WARN] Ma de in China: some software like Google Chrome require the true Internet first" -ForegroundColor Yellow
 
+# -----------------------------------------------------------------------------
 if (Check-Command -cmdname 'git') {
     Write-Host "Git is already installed, checking new version..."
     choco update git -y
@@ -104,40 +75,62 @@ else {
     choco install git -y
 }
 
-if (Check-Command -cmdname 'node') {
-    Write-Host "Node.js is already installed, checking new version..."
-    choco update nodejs -y
+choco install winrar -y
+choco install googlechrome -y
+choco install vlc -y
+choco install ffmpeg -y
+choco install sysinternals -y
+choco install sublimetext3.app -y
+choco install filezilla -y
+choco install steam -y
+choco install discord -y
+choco install bitwarden -y
+choco install reaper -y
+choco install github-desktop -y
+choco install putty -y
+choco install audacity -y
+choco install deluge -y
+choco install iobit-uninstaller -y
+choco install sharex -y
+
+# -----------------------------------------------------------------------------
+Write-Host "Installing Translucent Taskbar..."
+Start-BitsTransfer –Source  'https://github.com/TranslucentTB/TranslucentTB/releases/download/2020.1/TranslucentTB-setup.exe'  -Destination 'C:\Users\$env:UserName\Downloads\TranslucentTB-setup.exe'
+Start-Process -FilePath "C:\Users\$env:UserName\Downloads\TranslucentTB-setup.exe"
+# -----------------------------------------------------------------------------
+$geforceInstall = Read-Host 'Install Geforce Experience? (y/n)' -ForegroundColor Yellow
+if ($geforceInstall == 'y') {
+    Write-Host ""
+    Write-Host "Installing Geforce Experience..." -ForegroundColor Green
+    choco install geforce-experience -y
 }
 else {
-    Write-Host ""
-    Write-Host "Installing Node.js..." -ForegroundColor Green
-    choco install nodejs -y
+    Write-Host "Skipping Geforce Experience..."
 }
-
-choco install 7zip.install -y
-choco install googlechrome -y
-choco install potplayer -y
-choco install dotnetcore-sdk -y
-choco install ffmpeg -y
-choco install wget -y
-choco install openssl.light -y
-choco install vscode -y
-choco install vscode-csharp -y
-choco install vscode-icons -y
-choco install vscode-mssql -y
-choco install vscode-powershell -y
-choco install sysinternals -y
-choco install notepadplusplus.install -y
-choco install dotpeek -y
-choco install linqpad -y
-choco install fiddler -y
-choco install beyondcompare -y
-choco install filezilla -y
-choco install lightshot.install -y
-choco install microsoft-teams.install -y
-choco install teamviewer -y
-choco install github-desktop -y
+# -----------------------------------------------------------------------------
+$razerInstall = Read-Host 'Install Razer Synapse? (y/n)' -ForegroundColor Yellow
+if ($razerInstall == 'y') {
+    Write-Host ""
+    Write-Host "Installing Razer Synapse..." -ForegroundColor Green
+    Start-BitsTransfer –Source  'http://rzr.to/synapse-3-pc-download'  -Destination 'C:\Users\$env:USERPROFILE\Downloads\RazerSynapseInstaller.exe'
+    Start-Process -FilePath "C:\Users\$env:USERPROFILE\Downloads\RazerSynapseInstaller.exe"
+}
+else {
+    Write-Host "Skipping Razer Synapse..."
+}
+# -----------------------------------------------------------------------------
+$steelSeriesInstall = Read-Host 'Install SteelSeries Engine? (y/n)' -ForegroundColor Yellow
+if ($steelSeriesInstall == 'y') {
+    Write-Host ""
+    Write-Host "Installing SteelSeries Engine..." -ForegroundColor Green
+    Start-BitsTransfer –Source  'https://steelseries.com/engine/latest/windows'  -Destination 'C:\Users\$env:USERPROFILE\Downloads\SteelSeriesEngineInstaller.exe'
+    Start-Process -FilePath "C:\Users\$env:USERPROFILE\Downloads\SteelSeriesEngineInstaller.exe"
+}
+else {
+    Write-Host "Skipping SteelSeries Engine..."
+}
+# -----------------------------------------------------------------------------
 
 Write-Host "------------------------------------" -ForegroundColor Green
-Read-Host -Prompt "Setup is done, restart is needed, press [ENTER] to restart computer."
+Read-Host -Prompt "Setup complete! Restart required, press [ENTER] to restart computer."
 Restart-Computer
