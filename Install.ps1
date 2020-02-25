@@ -5,7 +5,7 @@ function Check-Command($cmdname) {
 }
 
 # -----------------------------------------------------------------------------
-$computerName = Read-Host 'Enter new computer name:'
+$computerName = Read-Host 'Enter new computer name'
 Write-Host "Renaming this computer to: " $computerName  -ForegroundColor Yellow
 Rename-Computer -NewName $computerName
 # -----------------------------------------------------------------------------
@@ -14,11 +14,6 @@ Write-Host "Disabling computer sleep when plugged in..." -ForegroundColor Green
 Write-Host "------------------------------------" -ForegroundColor Green
 Powercfg /Change monitor-timeout-ac 20
 Powercfg /Change standby-timeout-ac 0
-# -----------------------------------------------------------------------------
-Write-Host ""
-Write-Host "Removing Task View button from Taskbar..." -ForegroundColor Green
-Write-Host "------------------------------------" -ForegroundColor Green
-Set-ItemProperty -Path "Computer\HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name ShowTaskViewButton -Value 0
 # -----------------------------------------------------------------------------
 # To list all appx packages:
 # Get-AppxPackage | Format-Table -Property Name,Version,PackageFullName
@@ -57,6 +52,7 @@ else {
     Write-Host "Installing Chocolatey for Windows..." -ForegroundColor Green
     Write-Host "------------------------------------" -ForegroundColor Green
     Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+    choco feature disable --name="'showNonElevatedWarnings'"
 }
 
 Write-Host ""
@@ -93,15 +89,15 @@ choco install iobit-uninstaller -y
 choco install sharex -y
 
 # -----------------------------------------------------------------------------
-Write-Host "Installing Translucent Taskbar..."
-Start-BitsTransfer –Source  'https://github.com/TranslucentTB/TranslucentTB/releases/download/2020.1/TranslucentTB-setup.exe'  -Destination 'C:\Users\$env:UserName\Downloads\TranslucentTB-setup.exe'
+Write-Host "Installing Translucent Taskbar..." -ForegroundColor Green
+wget https://github.com/TranslucentTB/TranslucentTB/releases/download/2020.1/TranslucentTB-setup.exe  -OutFile C:\Users\$env:UserName\Downloads\TranslucentTB-setup.exe
 Start-Process -FilePath "C:\Users\$env:UserName\Downloads\TranslucentTB-setup.exe"
 # -----------------------------------------------------------------------------
-Write-Host "Installing Spybot Anti-Beacon 1.6..."
-Start-BitsTransfer –Source  'https://download.spybot.info/AntiBeacon/SpybotAntiBeacon-1.6-setup.exe'  -Destination 'C:\Users\$env:UserName\Downloads\SpybotAntiBeacon-1.6-setup.exe'
+Write-Host "Installing Spybot Anti-Beacon 1.6..." -ForegroundColor Green
+wget https://download.spybot.info/AntiBeacon/SpybotAntiBeacon-1.6-setup.exe  -OutFile C:\Users\$env:UserName\Downloads\SpybotAntiBeacon-1.6-setup.exe
 Start-Process -FilePath "C:\Users\$env:UserName\Downloads\SpybotAntiBeacon-1.6-setup.exe"
 # -----------------------------------------------------------------------------
-$geforceInstall = Read-Host 'Install Geforce Experience? (y/n)' -ForegroundColor Yellow
+$geforceInstall = Read-Host 'Install Geforce Experience? (y/n)'
 if ($geforceInstall == 'y') {
     Write-Host ""
     Write-Host "Installing Geforce Experience..." -ForegroundColor Green
@@ -111,22 +107,22 @@ else {
     Write-Host "Skipping Geforce Experience..."
 }
 # -----------------------------------------------------------------------------
-$razerInstall = Read-Host 'Install Razer Synapse? (y/n)' -ForegroundColor Yellow
+$razerInstall = Read-Host 'Install Razer Synapse? (y/n)'
 if ($razerInstall == 'y') {
     Write-Host ""
     Write-Host "Installing Razer Synapse..." -ForegroundColor Green
-    Start-BitsTransfer –Source  'http://rzr.to/synapse-3-pc-download'  -Destination 'C:\Users\$env:USERPROFILE\Downloads\RazerSynapseInstaller.exe'
+    wget http://rzr.to/synapse-3-pc-download  -OutFile C:\Users\$env:USERPROFILE\Downloads\RazerSynapseInstaller.exe
     Start-Process -FilePath "C:\Users\$env:USERPROFILE\Downloads\RazerSynapseInstaller.exe"
 }
 else {
     Write-Host "Skipping Razer Synapse..."
 }
 # -----------------------------------------------------------------------------
-$steelSeriesInstall = Read-Host 'Install SteelSeries Engine? (y/n)' -ForegroundColor Yellow
+$steelSeriesInstall = Read-Host 'Install SteelSeries Engine? (y/n)'
 if ($steelSeriesInstall == 'y') {
     Write-Host ""
     Write-Host "Installing SteelSeries Engine..." -ForegroundColor Green
-    Start-BitsTransfer –Source  'https://steelseries.com/engine/latest/windows'  -Destination 'C:\Users\$env:USERPROFILE\Downloads\SteelSeriesEngineInstaller.exe'
+    wget https://steelseries.com/engine/latest/windows  -OutFile C:\Users\$env:USERPROFILE\Downloads\SteelSeriesEngineInstaller.exe
     Start-Process -FilePath "C:\Users\$env:USERPROFILE\Downloads\SteelSeriesEngineInstaller.exe"
 }
 else {
