@@ -98,7 +98,7 @@ wget https://download.spybot.info/AntiBeacon/SpybotAntiBeacon-1.6-setup.exe  -Ou
 Start-Process -FilePath "C:\Users\$env:UserName\Downloads\SpybotAntiBeacon-1.6-setup.exe"
 # -----------------------------------------------------------------------------
 $geforceInstall = Read-Host 'Install Geforce Experience? (y/n)'
-if ($geforceInstall == 'y') {
+if ($geforceInstall -eq 'y') {
     Write-Host ""
     Write-Host "Installing Geforce Experience..." -ForegroundColor Green
     choco install geforce-experience -y
@@ -108,7 +108,7 @@ else {
 }
 # -----------------------------------------------------------------------------
 $razerInstall = Read-Host 'Install Razer Synapse? (y/n)'
-if ($razerInstall == 'y') {
+if ($razerInstall -eq 'y') {
     Write-Host ""
     Write-Host "Installing Razer Synapse..." -ForegroundColor Green
     wget http://rzr.to/synapse-3-pc-download  -OutFile C:\Users\$env:USERPROFILE\Downloads\RazerSynapseInstaller.exe
@@ -119,7 +119,7 @@ else {
 }
 # -----------------------------------------------------------------------------
 $steelSeriesInstall = Read-Host 'Install SteelSeries Engine? (y/n)'
-if ($steelSeriesInstall == 'y') {
+if ($steelSeriesInstall -eq 'y') {
     Write-Host ""
     Write-Host "Installing SteelSeries Engine..." -ForegroundColor Green
     wget https://steelseries.com/engine/latest/windows  -OutFile C:\Users\$env:USERPROFILE\Downloads\SteelSeriesEngineInstaller.exe
