@@ -5,21 +5,20 @@ function Check-Command($cmdname) {
 }
 
 # -----------------------------------------------------------------------------
-$computerName = Read-Host 'Enter New Computer Name'
+$computerName = Read-Host 'Enter new computer name:'
 Write-Host "Renaming this computer to: " $computerName  -ForegroundColor Yellow
 Rename-Computer -NewName $computerName
 # -----------------------------------------------------------------------------
 Write-Host ""
-Write-Host "Disable Sleep on AC Power..." -ForegroundColor Green
+Write-Host "Disabling computer sleep when plugged in..." -ForegroundColor Green
 Write-Host "------------------------------------" -ForegroundColor Green
 Powercfg /Change monitor-timeout-ac 20
 Powercfg /Change standby-timeout-ac 0
 # -----------------------------------------------------------------------------
 Write-Host ""
-Write-Host "Removing Edge Desktop Icon..." -ForegroundColor Green
+Write-Host "Removing Task View button from Taskbar..." -ForegroundColor Green
 Write-Host "------------------------------------" -ForegroundColor Green
-$edgeLink = $env:USERPROFILE + "\Desktop\Microsoft Edge.lnk"
-Remove-Item $edgeLink
+Set-ItemProperty -Path "Computer\HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name ShowTaskViewButton -Value 0
 # -----------------------------------------------------------------------------
 # To list all appx packages:
 # Get-AppxPackage | Format-Table -Property Name,Version,PackageFullName
@@ -97,6 +96,10 @@ choco install sharex -y
 Write-Host "Installing Translucent Taskbar..."
 Start-BitsTransfer –Source  'https://github.com/TranslucentTB/TranslucentTB/releases/download/2020.1/TranslucentTB-setup.exe'  -Destination 'C:\Users\$env:UserName\Downloads\TranslucentTB-setup.exe'
 Start-Process -FilePath "C:\Users\$env:UserName\Downloads\TranslucentTB-setup.exe"
+# -----------------------------------------------------------------------------
+Write-Host "Installing Spybot Anti-Beacon 1.6..."
+Start-BitsTransfer –Source  'https://download.spybot.info/AntiBeacon/SpybotAntiBeacon-1.6-setup.exe'  -Destination 'C:\Users\$env:UserName\Downloads\SpybotAntiBeacon-1.6-setup.exe'
+Start-Process -FilePath "C:\Users\$env:UserName\Downloads\SpybotAntiBeacon-1.6-setup.exe"
 # -----------------------------------------------------------------------------
 $geforceInstall = Read-Host 'Install Geforce Experience? (y/n)' -ForegroundColor Yellow
 if ($geforceInstall == 'y') {
