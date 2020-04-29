@@ -35,6 +35,15 @@ $uwpRubbishApps = @(
     "Microsoft.People",
     "Microsoft.WindowsFeedbackHub",
     "Microsoft.YourPhone",
+    "Microsoft.ZuneMusic",
+    "Microsoft.XboxGameOverlay",
+    "Microsoft.XboxGamingOverlay",
+    "Microsoft.Wallet",
+    "Microsoft.ZuneVideo",
+    "Microsoft.Windows.PeopleExperienceHost",
+    "Microsoft.WindowsCamera",
+    "Windows.CBSPreview",
+    "Microsoft.Windows.Cortana",
     "Microsoft.MicrosoftOfficeHub",
     "Fitbit.FitbitCoach",
     "4DF9E0F8.Netflix")
@@ -74,28 +83,28 @@ choco install winrar -y
 choco install googlechrome -y
 choco install vlc -y
 choco install ffmpeg -y
-choco install sysinternals -y
-choco install sublimetext3.app -y
+choco install vscode -y
 choco install filezilla -y
 choco install steam -y
 choco install discord -y
 choco install bitwarden -y
 choco install reaper -y
-choco install github-desktop -y
-choco install putty -y
 choco install audacity -y
 choco install deluge -y
-choco install iobit-uninstaller -y
 choco install sharex -y
 
 # -----------------------------------------------------------------------------
 Write-Host "Installing Translucent Taskbar..." -ForegroundColor Green
-wget https://github.com/TranslucentTB/TranslucentTB/releases/download/2020.1/TranslucentTB-setup.exe  -OutFile C:\Users\$env:UserName\Downloads\TranslucentTB-setup.exe
-Start-Process -FilePath "C:\Users\$env:UserName\Downloads\TranslucentTB-setup.exe"
+wget https://github.com/TranslucentTB/TranslucentTB/releases/download/2020.1/TranslucentTB-setup.exe  -OutFile $env:userprofile\Downloads\TranslucentTB-setup.exe
+Start-Process -FilePath "$env:userprofile\Downloads\TranslucentTB-setup.exe"
 # -----------------------------------------------------------------------------
 Write-Host "Installing Spybot Anti-Beacon 1.6..." -ForegroundColor Green
-wget https://download.spybot.info/AntiBeacon/SpybotAntiBeacon-1.6-setup.exe  -OutFile C:\Users\$env:UserName\Downloads\SpybotAntiBeacon-1.6-setup.exe
-Start-Process -FilePath "C:\Users\$env:UserName\Downloads\SpybotAntiBeacon-1.6-setup.exe"
+wget https://download.spybot.info/AntiBeacon/SpybotAntiBeacon-1.6-setup.exe  -OutFile $env:userprofile\Downloads\SpybotAntiBeacon-1.6-setup.exe
+Start-Process -FilePath "$env:userprofile\Downloads\SpybotAntiBeacon-1.6-setup.exe"
+# -----------------------------------------------------------------------------
+Write-Host "Installing Borderless Gaming..." -ForegroundColor Green
+wget https://github.com/Codeusa/Borderless-Gaming/releases/download/9.5.6/BorderlessGaming9.5.6_admin_setup.exe  -OutFile $env:userprofile\Downloads\BorderlessGaming9.5.6_admin_setup.exe
+Start-Process -FilePath "$env:userprofile\Downloads\BorderlessGaming9.5.6_admin_setup.exe"
 # -----------------------------------------------------------------------------
 $geforceInstall = Read-Host 'Install Geforce Experience? (y/n)'
 if ($geforceInstall -eq 'y') {
@@ -112,7 +121,7 @@ if ($razerInstall -eq 'y') {
     Write-Host ""
     Write-Host "Installing Razer Synapse..." -ForegroundColor Green
     wget https://dl.razerzone.com/drivers/Synapse3/win/RazerSynapseInstaller_V1.0.125.158.exe  -OutFile C:\Users\$env:USERPROFILE\Downloads\RazerSynapseInstaller.exe
-    Start-Process -FilePath "C:\Users\$env:USERPROFILE\Downloads\RazerSynapseInstaller.exe"
+    Start-Process -FilePath "$env:userprofile\Downloads\RazerSynapseInstaller.exe"
 }
 else {
     Write-Host "Skipping Razer Synapse..."
@@ -123,7 +132,7 @@ if ($steelSeriesInstall -eq 'y') {
     Write-Host ""
     Write-Host "Installing SteelSeries Engine..." -ForegroundColor Green
     wget https://engine.steelseriescdn.com/SteelSeriesEngine3.17.4Setup.exe  -OutFile C:\Users\$env:USERPROFILE\Downloads\SteelSeriesEngineInstaller.exe
-    Start-Process -FilePath "C:\Users\$env:USERPROFILE\Downloads\SteelSeriesEngineInstaller.exe"
+    Start-Process -FilePath "$env:userprofile\Downloads\SteelSeriesEngineInstaller.exe"
 }
 else {
     Write-Host "Skipping SteelSeries Engine..."
@@ -131,5 +140,4 @@ else {
 # -----------------------------------------------------------------------------
 
 Write-Host "------------------------------------" -ForegroundColor Green
-Read-Host -Prompt "Setup complete! Restart required, press [ENTER] to restart computer."
-Restart-Computer
+Write-Host "Setup complete! Don't forget to uninstall chocolatey and clean everything up!" -Foregroundcolor Green
