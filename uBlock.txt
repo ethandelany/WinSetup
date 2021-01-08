@@ -1,0 +1,13 @@
+youtube.com#@#.ytp-cards-button-icon-default > .ytp-cards-button-icon
+youtube.com#@#.ytp-cards-teaser-label
+youtube.com#@#.branding-context-container-outer
+youtube.com#@#.branding-img-container
+youtube.com#@#.ytp-ce-expanding-overlay-background
+youtube.com#@#.ytp-ce-expanding-image
+youtube.com#@#.ytp-ce-expanding-overlay
+youtube.com#@#.ytp-ce-element-shadow
+youtube.com#@#.ytp-ce-element
+youtube.com#@#.ytp-subscribe-card
+youtube.com#@#.ytp-cards-teaser-text
+youtube.com#@#.ytp-pause-overlay
+@@||youtube.com/api/stats/watchtime*
