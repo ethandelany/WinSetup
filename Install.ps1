@@ -1,19 +1,25 @@
 if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) { Start-Process powershell.exe "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs; exit }
 
-function Check-Command($cmdname) {
+function Test-Command($cmdname) {
     return [bool](Get-Command -Name $cmdname -ErrorAction SilentlyContinue)
 }
 
 # -----------------------------------------------------------------------------
-$computerName = Read-Host 'Enter new computer name'
+$computerName = Read-Host 'Enter new computer name' -Prompt
 Write-Host "Renaming this computer to: " $computerName  -ForegroundColor Yellow
 Rename-Computer -NewName $computerName
 # -----------------------------------------------------------------------------
 Write-Host ""
 Write-Host "Disabling computer sleep when plugged in..." -ForegroundColor Green
+powercfg /Change monitor-timeout-ac 20
+powercfg /Change standby-timeout-ac 0
+# -----------------------------------------------------------------------------
+Write-Host ""
+Write-Host "Changing power plan to Ultimate Performance" -ForegroundColor Green
 Write-Host "------------------------------------" -ForegroundColor Green
-Powercfg /Change monitor-timeout-ac 20
-Powercfg /Change standby-timeout-ac 0
+powercfg -duplicatescheme e9a42b02-d5df-448d-aa00-03f14749eb61
+$powerPlan = Get-WmiObject -Namespace root\cimv2\power -Class Win32_PowerPlan -Filter "ElementName = 'Ultimate Performance'"
+$powerPlan.Activate()
 # -----------------------------------------------------------------------------
 # To list all appx packages:
 # Get-AppxPackage | Format-Table -Property Name,Version,PackageFullName
@@ -46,6 +52,8 @@ $uwpRubbishApps = @(
     "Microsoft.Windows.Cortana",
     "Microsoft.MicrosoftOfficeHub",
     "Fitbit.FitbitCoach",
+    "Microsoft.Wallet",
+    "Microsoft.XboxOneSmartGlass",
     "4DF9E0F8.Netflix")
 
 foreach ($uwp in $uwpRubbishApps) {
@@ -53,14 +61,14 @@ foreach ($uwp in $uwpRubbishApps) {
 }
 # -----------------------------------------------------------------------------
 
-if (Check-Command -cmdname 'choco') {
+if (Test-Command -cmdname 'choco') {
     Write-Host "Chocolatey is already installed, skipping installation."
 }
 else {
     Write-Host ""
     Write-Host "Installing Chocolatey for Windows..." -ForegroundColor Green
     Write-Host "------------------------------------" -ForegroundColor Green
-    Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+    Set-ExecutionPolicy Bypass -Scope Process -Force; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
     choco feature disable --name="'showNonElevatedWarnings'"
 }
 
@@ -69,7 +77,7 @@ Write-Host "Installing Applications via Chocolatey..." -ForegroundColor Green
 Write-Host "------------------------------------" -ForegroundColor Green
 
 # -----------------------------------------------------------------------------
-if (Check-Command -cmdname 'git') {
+if (Test-Command -cmdname 'git') {
     Write-Host "Git is already installed, checking new version..."
     choco update git -y
 }
@@ -88,26 +96,26 @@ choco install filezilla -y
 choco install steam -y
 choco install discord -y
 choco install bitwarden -y
-choco install reaper -y
 choco install audacity -y
 choco install deluge -y
 choco install sharex -y
+choco install adoptopenjdk11openj9 -y
+choco install sysinternals -y
+choco install wireshark -y
+choco install nmap -y
+choco install windirstat -y
+choco install shutup10 -y
+choco install translucenttb -y
+choco install borderlessgaming -y
+choco install powertoys -y
+choco install jetbrainstoolbox -y
+choco install twitch -y
+choco install microsoft-windows-terminal -y
+choco install maven -y
 
 # -----------------------------------------------------------------------------
-Write-Host "Installing Translucent Taskbar..." -ForegroundColor Green
-wget https://github.com/TranslucentTB/TranslucentTB/releases/download/2020.1/TranslucentTB-setup.exe  -OutFile $env:userprofile\Downloads\TranslucentTB-setup.exe
-Start-Process -FilePath "$env:userprofile\Downloads\TranslucentTB-setup.exe"
-# -----------------------------------------------------------------------------
-Write-Host "Installing Spybot Anti-Beacon 1.6..." -ForegroundColor Green
-wget https://download.spybot.info/AntiBeacon/SpybotAntiBeacon-1.6-setup.exe  -OutFile $env:userprofile\Downloads\SpybotAntiBeacon-1.6-setup.exe
-Start-Process -FilePath "$env:userprofile\Downloads\SpybotAntiBeacon-1.6-setup.exe"
-# -----------------------------------------------------------------------------
-Write-Host "Installing Borderless Gaming..." -ForegroundColor Green
-wget https://github.com/Codeusa/Borderless-Gaming/releases/download/9.5.6/BorderlessGaming9.5.6_admin_setup.exe  -OutFile $env:userprofile\Downloads\BorderlessGaming9.5.6_admin_setup.exe
-Start-Process -FilePath "$env:userprofile\Downloads\BorderlessGaming9.5.6_admin_setup.exe"
-# -----------------------------------------------------------------------------
-$geforceInstall = Read-Host 'Install Geforce Experience? (y/n)'
-if ($geforceInstall -eq 'y') {
+$geforceInstall = Read-Host "Install Geforce Experience? (y/n)" -Prompt
+if ($geforceInstall -eq "y") {
     Write-Host ""
     Write-Host "Installing Geforce Experience..." -ForegroundColor Green
     choco install geforce-experience -y
@@ -116,26 +124,35 @@ else {
     Write-Host "Skipping Geforce Experience..."
 }
 # -----------------------------------------------------------------------------
-$razerInstall = Read-Host 'Install Razer Synapse? (y/n)'
-if ($razerInstall -eq 'y') {
+$focusriteInstall = Read-Host "Install Focusrite Control? (y/n)" -Prompt
+if ($focusriteInstall -eq "y") {
     Write-Host ""
-    Write-Host "Installing Razer Synapse..." -ForegroundColor Green
-    wget https://dl.razerzone.com/drivers/Synapse3/win/RazerSynapseInstaller_V1.0.125.158.exe  -OutFile C:\Users\$env:USERPROFILE\Downloads\RazerSynapseInstaller.exe
-    Start-Process -FilePath "$env:userprofile\Downloads\RazerSynapseInstaller.exe"
+    Write-Host "Installing Focusrite Control..." -ForegroundColor Green
+    Invoke-WebRequest https://fael-downloads-prod.focusrite.com/customer/prod/s3fs-public/downloads/Focusrite%20Control%20-%203.6.0.1822.exe -OutFile $env:userprofile\Downloads\focusrite.exe
+    Start-Process -FilePath "$env:userprofile\Downloads\focusrite.exe"
 }
 else {
-    Write-Host "Skipping Razer Synapse..."
+    Write-Host "Skipping Focusrite Control..."
 }
 # -----------------------------------------------------------------------------
-$steelSeriesInstall = Read-Host 'Install SteelSeries Engine? (y/n)'
-if ($steelSeriesInstall -eq 'y') {
+$steelSeriesInstall = Read-Host "Install SteelSeries Engine? (y/n)" -Prompt
+if ($steelSeriesInstall -eq "y") {
     Write-Host ""
     Write-Host "Installing SteelSeries Engine..." -ForegroundColor Green
-    wget https://engine.steelseriescdn.com/SteelSeriesEngine3.17.4Setup.exe  -OutFile C:\Users\$env:USERPROFILE\Downloads\SteelSeriesEngineInstaller.exe
-    Start-Process -FilePath "$env:userprofile\Downloads\SteelSeriesEngineInstaller.exe"
+    choco install steelseries-engine -y
 }
 else {
     Write-Host "Skipping SteelSeries Engine..."
+}
+# -----------------------------------------------------------------------------
+$xtuInstall = Read-Host "Install Intel Extreme Tuning Utilities? (y/n)" -Prompt
+if ($xtuInstall -eq "y") {
+    Write-Host ""
+    Write-Host "Installing Extreme Tuning Utility..." -ForegroundColor Green
+    choco install intel-xtu -y
+}
+else {
+    Write-Host "Skipping Extreme Tuning Utility..."
 }
 # -----------------------------------------------------------------------------
 
